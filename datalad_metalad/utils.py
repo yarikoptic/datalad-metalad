@@ -1,9 +1,11 @@
 import glob
 import json
+import logging
 import os.path as op
 import pkg_resources
 import sys
 from collections import OrderedDict
+from contextlib import contextmanager
 from itertools import islice
 from pathlib import Path
 from six import text_type
@@ -18,11 +20,9 @@ from datalad.distribution.dataset import (
 from datalad.support.exceptions import NoDatasetFound
 from datalad.support.json_py import load as json_load
 from dataladmetadatamodel import JSONObject
-
+from dataladmetadatamodel.mappableobject import MappableObject
 
 from . import aggregate_layout_version
-
-import logging
 
 
 lgr = logging.getLogger('datalad.dataset')
@@ -285,3 +285,11 @@ def read_json_objects(path_or_object: Union[str, JSONObject]
     if isinstance(path_or_object, List):
         return path_or_object
     return [path_or_object]
+
+
+@contextmanager
+def ensure_mapped(mappable_object: MappableObject):
+    needs_purge = mappable_object.ensure_mapped()
+    yield mappable_object
+    if needs_purge:
+        mappable_object.purge()

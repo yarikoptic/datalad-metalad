@@ -52,6 +52,12 @@ command_suite = (
             'meta-conduct',
             'meta_conduct'
         ),
+        (
+            'datalad_metalad.export',
+            'Export',
+            'meta-export',
+            'meta_export'
+        ),
     ]
 )
 
